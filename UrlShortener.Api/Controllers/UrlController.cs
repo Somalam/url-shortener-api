@@ -19,7 +19,7 @@ public class UrlController(UrlShortenerService svc) : ControllerBase
     }
 
     [HttpGet("/r/{code}")]
-    public async Task<IActionResult> Redirect(string code)
+    public async Task<IActionResult> RedirectToUrl(string code)
     {
         var url = await svc.ResolveAsync(code);
         return url is null ? NotFound() : Redirect(url);
