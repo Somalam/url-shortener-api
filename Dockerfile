@@ -1,19 +1,22 @@
+# Stage 1: Build
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 
-# Copy solution và các file dự án (đúng đường dẫn mới)
+# Copy solution và csproj
 COPY UrlShortener.sln .
 COPY UrlShortener.Api/UrlShortener.Api.csproj UrlShortener.Api/
 COPY UrlShortener.Tests/UrlShortener.Tests.csproj UrlShortener.Tests/
 
-# Restore toàn bộ thư viện
+# Restore
 RUN dotnet restore
 
-# Copy toàn bộ code vào và build
+# Copy code
 COPY . .
-RUN dotnet publish UrlShortener.Api/UrlShortener.Api.csproj -c Release -o /app/publish
 
-# Stage chạy ứng dụng
+# Build và Publish 
+RUN dotnet publish UrlShortener.Api/UrlShortener.Api.csproj -c Release -o /app/publish --no-restore
+
+# Stage 2: Runtime
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
 WORKDIR /app
 EXPOSE 8080
